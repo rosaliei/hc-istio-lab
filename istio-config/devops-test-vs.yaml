@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: devops-gw
+  namespace: devops-test
+spec:
+  hosts:
+  - "devops.com"
+  gateways:
+  - devops-gw
+  tcp:
+  - match:
+    - port: 31011
+    route:
+    - destination:
+        host: nginx-service.devops-test.svc.cluster.local
+        port:
+          number: 80
+

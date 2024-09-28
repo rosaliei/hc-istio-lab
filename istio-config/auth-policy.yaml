@@ -1,0 +1,15 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+ name: deny-all
+ namespace: istio-system
+spec:
+ selector:
+   matchLabels:
+     app: istio-ingressgateway
+ action: DENY
+ rules:
+ - from:
+   - source:
+       notIpBlocks: ["192.168.56.1/32"]
+       #notRemoteIpBlocks: ["192.168.56.1/32"]

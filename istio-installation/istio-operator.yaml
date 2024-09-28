@@ -1,0 +1,56 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: istiocontrolplane
+spec:
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: true
+        k8s:
+          replicaCount: 2
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: kubernetes.io/hostname
+                        operator: In
+                        values:
+                          - hellocloud-node-2
+                          - hellocloud-node-1
+          service:
+            type: NodePort
+            externalTrafficPolicy: Local
+            ports:
+              - name: status-port
+                port: 15021
+                protocol: TCP
+              - name: tls-istiod
+                port: 15012
+                protocol: TCP
+              - name: tls
+                port: 15443
+                nodePort: 31371
+                protocol: TCP
+              - name: http2
+                port: 80
+                nodePort: 30080
+                protocol: TCP
+              - name: https
+                port: 443
+                nodePort: 30443
+                protocol: TCP
+              - name: devops-test
+                port: 31010
+                nodePort: 31010
+                protocol: TCP
+
+  profile: demo
+  meshConfig:
+    defaultConfig:
+      gatewayTopology:
+        numTrustedProxies: 2
+    accessLogFile: /dev/stdout
+    enableTracing: true

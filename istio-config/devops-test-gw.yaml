@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: devops-gw
+  namespace: devops-test
+spec:
+  selector:
+    app: istio-ingressgateway
+  servers:
+  - port:
+      number: 31011
+      name: nginx-pods
+      protocol: TCP
+    hosts:
+    - "devops.com"
